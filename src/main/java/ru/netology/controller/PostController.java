@@ -1,6 +1,7 @@
 package ru.netology.controller;
 
 import com.google.gson.Gson;
+import ru.netology.exception.NotFoundException;
 import ru.netology.model.Post;
 import ru.netology.service.PostService;
 
@@ -25,27 +26,44 @@ public class PostController {
 
   public void getById(long id, HttpServletResponse response) throws IOException {
     response.setContentType(APPLICATION_JSON);
-    final var data = service.getById(id);
-    writeAnswer(response, gson.toJson(data));
+    try {
+      final var data = service.getById(id);
+      writeAnswer(response, gson.toJson(data));
+    } catch (NotFoundException e) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+
+
   }
 
   public void save(Reader body, HttpServletResponse response) throws IOException {
     response.setContentType(APPLICATION_JSON);
-    final var post = gson.fromJson(body, Post.class);
-    final var data = service.save(post);
-    writeAnswer(response, gson.toJson(data));
+    final var postForSave = gson.fromJson(body, Post.class);
+    if (postForSave.getId() != 0) {
+        try {
+            var savedPost = service.getById(postForSave.getId());
+            savePost(response, postForSave);
+        } catch (NotFoundException e) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    } else {
+        savePost(response, postForSave);
+    }
+
+
   }
 
-  private void writeAnswer(HttpServletResponse response, String s) throws IOException {
+    private void savePost(HttpServletResponse response, Post postForSave) throws IOException {
+        final var data = service.save(postForSave);
+        writeAnswer(response, gson.toJson(data));
+    }
+
+    private void writeAnswer(HttpServletResponse response, String s) throws IOException {
     response.getWriter().print(s);
   }
 
   public void removeById(long id, HttpServletResponse response) {
-    Boolean result = service.removeById(id);
-    if (result) {
-      response.setStatus(HttpServletResponse.SC_OK);
-    } else {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-    }
+    service.removeById(id);
+    response.setStatus(HttpServletResponse.SC_OK);
   }
 }
