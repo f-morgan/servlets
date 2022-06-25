@@ -13,7 +13,12 @@
     <!-- mapping - привязка к определённому URL-->
     <servlet-mapping>
         <servlet-name>main</servlet-name>
-        <url-pattern>/servlet</url-pattern>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>default</servlet-name>
+        <url-pattern>/static/*</url-pattern>
     </servlet-mapping>
 </web-app>
 

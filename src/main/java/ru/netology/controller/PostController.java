@@ -26,31 +26,18 @@ public class PostController {
 
   public void getById(long id, HttpServletResponse response) throws IOException {
     response.setContentType(APPLICATION_JSON);
-    try {
-      final var data = service.getById(id);
-      writeAnswer(response, gson.toJson(data));
-    } catch (NotFoundException e) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-    }
-
-
+    final var data = service.getById(id);
+    writeAnswer(response, gson.toJson(data));
   }
 
   public void save(Reader body, HttpServletResponse response) throws IOException {
     response.setContentType(APPLICATION_JSON);
     final var postForSave = gson.fromJson(body, Post.class);
     if (postForSave.getId() != 0) {
-        try {
-            var savedPost = service.getById(postForSave.getId());
-            savePost(response, postForSave);
-        } catch (NotFoundException e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        }
+        var savedPost = service.getById(postForSave.getId());
     } else {
         savePost(response, postForSave);
     }
-
-
   }
 
     private void savePost(HttpServletResponse response, Post postForSave) throws IOException {
