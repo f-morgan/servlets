@@ -35,6 +35,7 @@ public class MainServlet extends HttpServlet {
                 // easy way
                 final var id = getId(path);
                 controller.getById(id, resp);
+                return;
             }
             if (method.equals("POST") && path.equals("/api/posts")) {
                 controller.save(req.getReader(), resp);
@@ -47,8 +48,11 @@ public class MainServlet extends HttpServlet {
                 return;
             }
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        } catch (NotFoundException e) {
+            //e.printStackTrace();
+            resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } catch (Exception e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
