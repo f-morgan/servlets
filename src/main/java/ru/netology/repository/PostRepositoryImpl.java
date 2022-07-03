@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
 public class PostRepositoryImpl implements PostRepository{
     private static final ConcurrentHashMap<Long, Post> posts = new ConcurrentHashMap<>();
     private static final AtomicLong lastPostId = new AtomicLong(0);
