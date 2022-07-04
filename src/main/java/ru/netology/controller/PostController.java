@@ -36,9 +36,8 @@ public class PostController {
     final var postForSave = gson.fromJson(body, Post.class);
     if (postForSave.getId() != 0) {
         var savedPost = service.getById(postForSave.getId());
-    } else {
-        savePost(response, postForSave);
     }
+    savePost(response, postForSave);
   }
 
     private void savePost(HttpServletResponse response, Post postForSave) throws IOException {
